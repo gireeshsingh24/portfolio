@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * NOTE: these hex values were read off the reference design by eye — no source
+ * file was available to sample. Replace with the exact brand values when you
+ * have them; nothing outside this block hardcodes a color.
+ */
+@theme {
+  --color-bg: #0b1220;
+  --color-surface: #121a2b;
+  --color-surface-2: #16203440;
+  --color-accent: #f2795b;
+  --color-accent-hover: #e2664a;
+  --color-heading: #ffffff;
+  --color-body: #c3ccdb;
+  --color-muted: #8a94a6;
+  --color-line: #24304a;
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* offset for the sticky header when jumping to #anchors */
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-body);
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion
+ *
+ * These animations are continuous — they loop for as long as the page is open
+ * rather than playing once on load.
+ *
+ * Every keyframe animates only `transform` and `opacity`. Both are composited
+ * on the GPU and skip layout and paint, so a permanent loop stays cheap. Never
+ * add width/height/top/left here: those force layout on every frame.
+ * ------------------------------------------------------------------------- */
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes drift-x {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(10px, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes drift-x-reverse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(-10px, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.7;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(var(--orbit-radius, 150px)) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(var(--orbit-radius, 150px))
+      rotate(-360deg);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% center;
+  }
+  to {
+    background-position: -200% center;
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes grid-pan {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -60px, 0);
+  }
+}
+
+.animate-float-y {
+  animation: float-y 6s ease-in-out infinite;
+}
+.animate-drift-x {
+  animation: drift-x 3.5s ease-in-out infinite;
+}
+.animate-drift-x-reverse {
+  animation: drift-x-reverse 3.5s ease-in-out infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin-slow 28s linear infinite;
+}
+.animate-spin-slower {
+  animation: spin-slow 44s linear infinite reverse;
+}
+.animate-orbit {
+  animation: orbit 18s linear infinite;
+}
+.animate-caret {
+  animation: caret-blink 1.1s step-end infinite;
+}
+.animate-grid-pan {
+  animation: grid-pan 8s linear infinite;
+}
+
+/* Light sweep across a button on hover. A skewed pseudo-element translated
+ * across the face — transform only, so it never triggers layout. */
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%) skewX(-20deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.28),
+    transparent
+  );
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.btn-shine:hover::before {
+  transform: translateX(120%) skewX(-20deg);
+}
+
+/* Marquee. The track holds two identical copies of the list, so translating by
+ * exactly -50% lands the second copy where the first started — a seamless loop.
+ * Pauses on hover so the names can actually be read. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee 26s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Gradient text sweep. Needs background-position, which is paint-only — cheap
+ * enough on a single short heading, but do not apply it to large areas. */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-heading) 0%,
+    var(--color-heading) 35%,
+    var(--color-accent) 50%,
+    var(--color-heading) 65%,
+    var(--color-heading) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Scroll reveal.
+ *
+ * Content is VISIBLE by default and only hidden once JS has confirmed it can
+ * reveal it again — the `js-reveal-ready` class is set on <html> by the reveal
+ * provider on mount.
+ *
+ * This ordering matters: hiding by default means any failure of the observer
+ * (JS disabled or blocked, a script error, a crawler that does not execute JS)
+ * leaves the text permanently at opacity 0. Content must never depend on
+ * JavaScript to become readable. */
+.js-reveal-ready [data-reveal]:not([data-visible="true"]) {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+
+[data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---------------------------------------------------------------------------
+ * Accessibility: users who ask for reduced motion get a static page.
+ *
+ * Vestibular disorders make continuous looping motion genuinely unpleasant, so
+ * every loop above is disabled here rather than merely shortened, and revealed
+ * content is shown immediately so nothing stays invisible.
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
