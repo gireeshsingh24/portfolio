@@ -2,7 +2,10 @@ import type { Profile } from "@/features/about/types";
 
 export const profile: Profile = {
   name: "Gireesh Singh",
-  role: "Senior Frontend Developer",
+  role: "Senior React & Next.js Developer",
+  eyebrow: "Senior React & Next.js Developer · 7+ Years Experience",
+  headline: "I build complex web applications that businesses can rely on.",
+  specialisation: "SaaS · Real-Time Systems · Frontend Architecture",
   greeting: "Hello",
   intro: "I'm Gireesh",
   about:
@@ -38,7 +41,7 @@ export const profile: Profile = {
 
   stats: [
     { id: "experience", value: "7", suffix: "+", label: "Years of experience" },
-    { id: "projects", value: "100", suffix: "+", label: "Applications delivered" },
+    { id: "features", value: "100", suffix: "+", label: "Features & modules shipped" },
     { id: "scale", value: "200", suffix: "+", label: "Users on a live platform" },
   ],
   socials: [

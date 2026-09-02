@@ -79,10 +79,39 @@ export function ArrowUpRightIcon(props: IconProps) {
   );
 }
 
+export function LayersIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+      <path d="m3 13 9 5 9-5" />
+    </Svg>
+  );
+}
+
+export function GaugeIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 18a9 9 0 1 1 16 0" />
+      <path d="m12 14 4-4" />
+    </Svg>
+  );
+}
+
+export function SparkIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l3.5 3.5M15.5 15.5 19 19M19 5l-3.5 3.5M8.5 15.5 5 19" />
+    </Svg>
+  );
+}
+
 export const serviceIcons = {
   code: CodeIcon,
   mobile: MobileIcon,
   cloud: CloudIcon,
+  layers: LayersIcon,
+  gauge: GaugeIcon,
+  spark: SparkIcon,
 } as const;
 
 export const socialIcons = {

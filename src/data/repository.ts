@@ -1,6 +1,18 @@
-import type { Profile } from "@/features/about/types";
+import type {
+  Capability,
+  ProcessStep,
+  Profile,
+  ServiceOffering,
+  StackGroup,
+} from "@/features/about/types";
 import type { Project } from "@/features/projects/types";
 import { profile } from "./profile";
+import {
+  capabilities,
+  processSteps,
+  services,
+  stackGroups,
+} from "./practice";
 import { projects } from "./projects";
 
 /**
@@ -41,4 +53,26 @@ export async function getProjectsWithCaseStudy(): Promise<Project[]> {
 
 export async function getProfile(): Promise<Profile> {
   return profile;
+}
+
+/* -------------------------------------------------------------------------
+ * Practice: services, capabilities, stack and process (§45, §50, §51, §52).
+ * Same seam rule as above — components import from here, never from the data
+ * modules directly.
+ * ---------------------------------------------------------------------- */
+
+export async function getServices(): Promise<ServiceOffering[]> {
+  return [...services];
+}
+
+export async function getCapabilities(): Promise<Capability[]> {
+  return [...capabilities];
+}
+
+export async function getStackGroups(): Promise<StackGroup[]> {
+  return [...stackGroups];
+}
+
+export async function getProcessSteps(): Promise<ProcessStep[]> {
+  return [...processSteps];
 }

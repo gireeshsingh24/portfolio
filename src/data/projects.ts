@@ -256,6 +256,76 @@ export const projects: readonly Project[] = [
     },
     featured: true,
     order: 3,
+    caseStudy: {
+      tagline: "Remote patient monitoring platform",
+      overview:
+        "A platform for clinicians monitoring patients remotely, combining " +
+        "live health data, in-portal voice calls, clinical messaging and " +
+        "documentation, and the billing and payroll workflows that nursing " +
+        "staff depend on.",
+      challenge: {
+        summary:
+          "Clinical staff were switching between a phone, a monitoring " +
+          "dashboard and a notes system during a single patient interaction. " +
+          "Context was lost at every switch, and healthcare data carries " +
+          "constraints ordinary business software does not.",
+        points: [
+          "Calling a patient meant leaving the screen showing their vitals",
+          "Clinical notes and messages lived apart from the monitoring data",
+          "Nursing compensation is shift-based and was tracked separately",
+          "Patient data demands strict handling and access control",
+        ],
+      },
+      role: {
+        title: "Senior Frontend Developer",
+        summary:
+          "I built the in-portal VOIP module and the surrounding clinical " +
+          "workflows, integrating with a separately built backend.",
+        responsibilities: [
+          "In-portal VOIP calling alongside live patient data",
+          "Secure clinical messaging interfaces",
+          "Clinical documentation and patient history views",
+          "Shift-based billing and payroll workflows for nursing staff",
+          "Real-time health data presentation",
+          "API integration and application state",
+        ],
+      },
+      highlights: [
+        {
+          title: "Calls and clinical data on one screen",
+          body:
+            "The core of the work: a clinician starts a call from inside the " +
+            "portal and the patient's vitals, alerts and medication list stay " +
+            "visible throughout. No window switching during a clinical " +
+            "conversation, which is where context gets lost.",
+        },
+        {
+          title: "Clinical workflows",
+          body:
+            "Messaging, documentation and patient history are part of the " +
+            "same surface as monitoring, so what a clinician observes and " +
+            "what they record do not live in separate systems.",
+        },
+        {
+          title: "Operational workflows",
+          body:
+            "Nursing staff are paid by shift, so billing and payroll were " +
+            "built into the platform rather than handled outside it — the " +
+            "same data serving both clinical and operational needs.",
+        },
+      ],
+      stack: [
+        {
+          group: "Frontend",
+          items: ["React", "TypeScript", "SIP.js", "WebRTC", "REST APIs"],
+        },
+        { group: "Backend (separate team)", items: ["Python", "Django"] },
+      ],
+      outcome:
+        "Gave clinicians a single place to monitor, call, message and " +
+        "document, and gave the organisation shift-based billing and payroll " +
+        "in the same system.",
+    },
   },
   {
     slug: "web-app-suite",

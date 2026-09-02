@@ -6,10 +6,11 @@ import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "#home", label: "Home" },
+  { href: "#services", label: "Services" },
+  { href: "#projects", label: "Work" },
+  { href: "#engineering", label: "Engineering" },
   { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contacts", label: "Contacts" },
+  { href: "#contacts", label: "Contact" },
 ] as const;
 
 export function SiteHeader({ name }: { name: string }) {
