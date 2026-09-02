@@ -46,20 +46,27 @@ export function TypingRole({ role }: { role: string }) {
   const visible = prefersReduced ? role : role.slice(0, count);
 
   return (
-    <p className="text-3xl font-bold sm:text-5xl">
-      {/* Reserves the full width so the buttons below never shift as the text
-          types and deletes. */}
-      <span className="invisible block h-0 overflow-hidden" aria-hidden>
+    // Grid-stacked so the reserved copy and the animated copy occupy the same
+    // cell: the element keeps the full text's height and width (nothing below
+    // shifts as it types) without the reserved copy rendering as a second
+    // visible line, which `invisible` alone did not prevent.
+    <p
+      aria-label={role}
+      className="grid text-base font-semibold tracking-wide sm:text-lg"
+    >
+      {/* Sizing ghost. Not announced; purely reserves space. */}
+      <span
+        aria-hidden
+        className="invisible col-start-1 row-start-1 select-none"
+      >
         {role}
       </span>
 
-      <span className="sr-only">{role}</span>
-
-      <span aria-hidden className="animate-shimmer">
-        {visible}
-      </span>
-      <span aria-hidden className="animate-caret ml-0.5 text-accent">
-        |
+      {/* The visible, animated copy. Assistive tech reads the full role from
+          the aria-label on the paragraph instead of the partial text. */}
+      <span className="col-start-1 row-start-1" aria-hidden>
+        <span className="animate-shimmer">{visible}</span>
+        <span className="animate-caret ml-0.5 text-accent">|</span>
       </span>
     </p>
   );

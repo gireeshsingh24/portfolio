@@ -62,6 +62,13 @@ export type Capability = {
   body: string;
   /** Slugs of projects that demonstrate this. Keeps claims traceable (§60). */
   evidence: readonly string[];
+  /**
+   * Shown instead of the evidence line when no case study on this site
+   * demonstrates the capability. Says where the experience comes from rather
+   * than leaving the card blank — and never implies the listed projects
+   * prove it.
+   */
+  context?: string;
 };
 
 /** A grouped stack section (§51) — never a flat logo wall. */

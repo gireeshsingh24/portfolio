@@ -2,10 +2,14 @@ import type { Profile } from "@/features/about/types";
 
 export const profile: Profile = {
   name: "Gireesh Singh",
-  role: "Senior React & Next.js Developer",
-  eyebrow: "Senior React & Next.js Developer · 7+ Years Experience",
-  headline: "I build complex web applications that businesses can rely on.",
-  specialisation: "SaaS · Real-Time Systems · Frontend Architecture",
+  role: "Senior Full-Stack Developer",
+  eyebrow: "Full-Stack Developer · 7+ Years",
+  // "Applications" rather than "web apps": the work spans web, mobile and
+  // desktop, and narrowing it to web understates the platforms shipped.
+  headline: "I build applications businesses rely on.",
+  // Searchable technology names rather than adjectives, now spanning the
+  // three platforms shipped: web, mobile and desktop.
+  specialisation: "Web · Mobile · Desktop · Real-Time",
   greeting: "Hello",
   intro: "I'm Gireesh",
   about:
@@ -14,8 +18,9 @@ export const profile: Profile = {
     "platform running 100+ trucks across multiple sites, a browser-based " +
     "phone system handling conference calls and live transfers, and a " +
     "healthcare portal where clinicians call patients while their health data " +
-    "streams onto the same screen. Six years across React, Next.js and " +
-    "TypeScript, now working full stack with Node.js and MongoDB.",
+    "streams onto the same screen. Seven years across React, Next.js and " +
+    "TypeScript on the frontend, and Node.js, NestJS and PostgreSQL on the " +
+    "backend — shipped to web, mobile and desktop.",
   resumeUrl: "/resume.pdf",
   avatar: {
     src: "/images/avatar.svg",
@@ -26,13 +31,14 @@ export const profile: Profile = {
     "React",
     "Next.js",
     "TypeScript",
-    "Redux Toolkit",
-    "TanStack Query",
-    "WebSockets",
+    "React Native",
+    "Electron.js",
     "Node.js",
-    "MongoDB",
+    "NestJS",
+    "PostgreSQL",
+    "WebSockets",
+    "Tailwind CSS",
   ],
-
   services: [
     { id: "frontend", title: "Frontend Architecture", icon: "code" },
     { id: "realtime", title: "Real-Time Systems", icon: "mobile" },

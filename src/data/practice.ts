@@ -55,6 +55,20 @@ export const services: readonly ServiceOffering[] = [
     icon: "code",
   },
   {
+    id: "cross-platform",
+    title: "Mobile & Desktop Applications",
+    summary:
+      "The same product on every surface it needs to reach — responsive web, " +
+      "React Native on mobile, and Electron on desktop, sharing logic rather " +
+      "than being rebuilt three times.",
+    problems: [
+      "A web product that needs a real desktop or mobile presence",
+      "Three codebases drifting apart with every release",
+      "Desktop capabilities the browser cannot reach",
+    ],
+    icon: "mobile",
+  },
+  {
     id: "business-platforms",
     title: "Business Platforms",
     summary:
@@ -142,6 +156,16 @@ export const capabilities: readonly Capability[] = [
     evidence: ["mytruckboss", "rpm-platform"],
   },
   {
+    id: "cross-platform",
+    title: "Cross-Platform Delivery",
+    body:
+      "Shipping one product to web, mobile and desktop — React Native for " +
+      "native mobile and Electron for desktop, sharing domain logic and " +
+      "component patterns instead of maintaining three separate builds.",
+    evidence: [],
+    context: "From desktop and mobile work outside the case studies here.",
+  },
+  {
     id: "production",
     title: "Production Engineering",
     body:
@@ -167,6 +191,17 @@ export const stackGroups: readonly StackGroup[] = [
     id: "ui",
     label: "UI",
     items: ["Tailwind CSS", "Framer Motion", "Lucide React", "SASS"],
+  },
+  {
+    id: "platforms",
+    label: "Platforms",
+    items: [
+      "Web Applications",
+      "React Native",
+      "Electron.js",
+      "Progressive Web Apps",
+      "Cross-Platform Delivery",
+    ],
   },
   {
     id: "backend",

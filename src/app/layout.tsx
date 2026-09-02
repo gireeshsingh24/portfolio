@@ -15,17 +15,28 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Gireesh Singh — Senior Frontend Developer",
+    default: "Gireesh Singh — Senior Full-Stack Developer",
     template: "%s | Gireesh Singh",
   },
+  // Kept under ~160 characters so search results do not truncate it, while
+  // still carrying the terms people actually search: the role, the years, and
+  // the framework and runtime names.
   description:
-    "Senior Frontend Developer with 6+ years building real-time web applications in React, Next.js and TypeScript — from multi-site operations platforms to browser-based telephony and healthcare portals.",
+    "Senior Full-Stack Developer, 7+ years. Web, mobile and desktop apps in " +
+    "React, Next.js, React Native, Electron, Node.js and PostgreSQL.",
   keywords: [
-    "Senior Frontend Developer",
+    "Senior Full-Stack Developer",
+    "Full Stack Developer",
     "React Developer",
     "Next.js",
     "TypeScript",
-    "Full Stack Developer",
+    "Node.js",
+    "NestJS",
+    "PostgreSQL",
+    "React Native",
+    "Electron.js",
+    "Desktop App Developer",
+    "Mobile App Developer",
     "WebRTC",
     "VOIP",
     "Surat",
@@ -35,9 +46,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    title: "Gireesh Singh — Senior Frontend Developer",
+    title: "Gireesh Singh — Senior Full-Stack Developer",
     description:
-      "6+ years building real-time web applications in React, Next.js and TypeScript — including VOIP and healthcare platforms.",
+      "7+ years building web, mobile and desktop applications — strong frontend and strong backend engineering, from telephony to healthcare platforms.",
   },
 };
 

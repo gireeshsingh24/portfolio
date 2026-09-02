@@ -47,6 +47,15 @@ export function CapabilitiesSection({
                 {capability.body}
               </p>
 
+              {/* Without a case study on this site, say where the experience
+                  comes from rather than rendering nothing — a blank space
+                  reads as an unfinished card. */}
+              {capability.evidence.length === 0 && capability.context && (
+                <p className="mt-4 text-xs italic text-muted">
+                  {capability.context}
+                </p>
+              )}
+
               {capability.evidence.length > 0 && (
                 <p className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted">
                   <span>Proven in:</span>
