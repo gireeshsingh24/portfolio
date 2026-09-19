@@ -31,7 +31,15 @@ export async function generateMetadata(
   return {
     title: project.title,
     description: project.caseStudy.tagline,
+    // Required, not optional. `alternates.canonical` is inherited from the
+    // root layout, so without this every case study would declare the
+    // HOMEPAGE as its canonical URL — telling search engines these pages are
+    // duplicates of it and should not be indexed. They are the longest, most
+    // specific content on the site, and the sitemap lists them, so the two
+    // signals would also contradict each other.
+    alternates: { canonical: `/projects/${slug}` },
     openGraph: {
+      url: `/projects/${slug}`,
       title: project.title,
       description: project.caseStudy.tagline,
     },
