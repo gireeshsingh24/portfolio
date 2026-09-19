@@ -50,10 +50,14 @@ export function TypingRole({ role }: { role: string }) {
     // cell: the element keeps the full text's height and width (nothing below
     // shifts as it types) without the reserved copy rendering as a second
     // visible line, which `invisible` alone did not prevent.
-    <p
-      aria-label={role}
-      className="grid text-base font-semibold tracking-wide sm:text-lg"
-    >
+    <p className="grid text-base font-semibold tracking-wide sm:text-lg">
+      {/* The role as real text, for assistive tech and crawlers.
+          This was an aria-label on the paragraph, which ARIA prohibits on an
+          element with no role — a screen reader may ignore it, and since every
+          other child here is aria-hidden, the line then announced nothing.
+          `sr-only` is absolutely positioned, so it takes no grid track. */}
+      <span className="sr-only">{role}</span>
+
       {/* Sizing ghost. Not announced; purely reserves space. */}
       <span
         aria-hidden
@@ -62,8 +66,8 @@ export function TypingRole({ role }: { role: string }) {
         {role}
       </span>
 
-      {/* The visible, animated copy. Assistive tech reads the full role from
-          the aria-label on the paragraph instead of the partial text. */}
+      {/* The visible, animated copy. Hidden from assistive tech so the
+          partial text is never announced mid-keystroke. */}
       <span className="col-start-1 row-start-1" aria-hidden>
         <span className="animate-shimmer">{visible}</span>
         <span className="animate-caret ml-0.5 text-accent">|</span>

@@ -55,10 +55,16 @@ export function CountUp({
   // reduced-motion value never needs a state write at all.
   const display = shouldAnimate ? String(progressValue) : value;
 
-  // aria-label carries the final value so assistive tech never reads the
-  // intermediate counting numbers.
+  // The final value is real text, visually hidden, and the counting copy is
+  // hidden from assistive tech.
+  //
+  // This was an aria-label on the outer span, which looks equivalent but is
+  // not: ARIA prohibits aria-label on an element with no role, so a screen
+  // reader is free to ignore it — and with the only other child aria-hidden,
+  // that left the statistic announcing nothing at all.
   return (
-    <span ref={ref} aria-label={value}>
+    <span ref={ref}>
+      <span className="sr-only">{value}</span>
       <span aria-hidden>{display}</span>
     </span>
   );
