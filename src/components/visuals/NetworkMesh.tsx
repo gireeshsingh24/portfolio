@@ -59,7 +59,7 @@ const LABEL_SIDE_COLUMN_RATIO = 0.7;
  * Fraction of the canvas width where labels start fading in, measured from
  * its left edge. Everything left of this is where the hero copy sits.
  */
-const LABEL_CLEAR_START = 0.06;
+const LABEL_CLEAR_START = 0.14;
 /** Gap kept between a label and the canvas edge, in CSS pixels. */
 const LABEL_EDGE_PAD = 8;
 

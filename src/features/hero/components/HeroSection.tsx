@@ -25,7 +25,7 @@ export function HeroSection({ profile }: { profile: Profile }) {
           depth can drive it. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[46%] lg:w-[44%]"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[42%]"
       >
         <NetworkMesh labels={profile.technologies} />
       </div>
@@ -34,11 +34,12 @@ export function HeroSection({ profile }: { profile: Profile }) {
           Dimming the mesh itself far enough for comfortable reading would have
           flattened it back into noise, so the contrast is bought locally: a
           wash under the text column only, leaving the mesh crisp everywhere
-          else. On small screens the copy spans the full width, so the wash
-          covers everything rather than one side. */}
+          else. Below lg the copy spans the full width and the mesh sits
+          behind all of it, so the wash covers everything rather than one
+          side — the same breakpoint the mesh column itself uses. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-bg/55 md:bg-transparent md:[background-image:linear-gradient(to_right,var(--color-bg)_0%,color-mix(in_srgb,var(--color-bg)_72%,transparent)_34%,transparent_62%)]"
+        className="pointer-events-none absolute inset-0 bg-bg/55 lg:bg-transparent lg:[background-image:linear-gradient(to_right,var(--color-bg)_0%,color-mix(in_srgb,var(--color-bg)_72%,transparent)_34%,transparent_62%)]"
       />
 
       <Container className="relative w-full py-10 md:py-0">
