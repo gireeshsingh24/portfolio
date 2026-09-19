@@ -33,6 +33,13 @@ export type Profile = {
   intro: string;
   about: string;
   resumeUrl: string;
+  /**
+   * WhatsApp number in international format, digits only, no "+".
+   *
+   * Optional on purpose: the chat widget hides its WhatsApp option entirely
+   * when this is unset, rather than rendering a button that goes nowhere.
+   */
+  whatsapp?: string;
   avatar: {
     src: string;
     alt: string;

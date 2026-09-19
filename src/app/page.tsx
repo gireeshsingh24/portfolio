@@ -13,6 +13,7 @@ import {
   getStackGroups,
 } from "@/data/repository";
 import { AboutSection } from "@/features/about/components/AboutSection";
+import { ChatWidget } from "@/features/chat/components/ChatWidget";
 import { ContactSection } from "@/features/contact/components/ContactSection";
 import { HeroSection } from "@/features/hero/components/HeroSection";
 import { CapabilitiesSection } from "@/features/engineering/components/CapabilitiesSection";
@@ -31,6 +32,12 @@ export default async function HomePage() {
       getStackGroups(),
       getProcessSteps(),
     ]);
+
+  // The mail social carries a "mailto:" href; the widget needs the address.
+  const contactEmail =
+    profile.socials
+      .find((social) => social.icon === "mail")
+      ?.href.replace(/^mailto:/, "") ?? "";
 
   return (
     <>
@@ -63,6 +70,14 @@ export default async function HomePage() {
       </main>
 
       <SiteFooter profile={profile} />
+
+      {/* Outside <main>: it floats over the page and is not part of the
+          document's reading order. */}
+      <ChatWidget
+        email={contactEmail}
+        whatsapp={profile.whatsapp}
+        portfolioUrl={profile.resumeUrl}
+      />
     </>
   );
 }
