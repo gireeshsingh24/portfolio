@@ -62,6 +62,17 @@ const LABEL_SIDE_COLUMN_RATIO = 0.7;
 const LABEL_CLEAR_START = 0.14;
 /** Gap kept between a label and the canvas edge, in CSS pixels. */
 const LABEL_EDGE_PAD = 8;
+/**
+ * Canvas width at which labels render at their base size, and the range they
+ * are allowed to scale within. A narrow column needs smaller type: the text
+ * does not shrink with the sphere on its own, so at a laptop width the longest
+ * names would otherwise be a third of the sphere wide.
+ */
+const LABEL_REFERENCE_WIDTH = 600;
+const LABEL_SCALE_MIN = 0.72;
+const LABEL_SCALE_MAX = 1.15;
+/** A label wider than this fraction of the canvas is skipped as unreadable. */
+const LABEL_MAX_WIDTH_RATIO = 0.42;
 
 type Pulse = { edge: number; t: number; speed: number };
 
@@ -130,22 +141,26 @@ export function NetworkMesh({
       "ui-sans-serif, system-ui, sans-serif";
 
     /**
-     * Which nodes carry a label.
+     * Every node carries a name.
      *
-     * Spread across the whole node list rather than taken from the front of
-     * it: the Fibonacci lattice walks the sphere pole to pole, so consecutive
-     * indices sit near each other and the first N labels would all crowd one
-     * cap. A stride spaces them around the surface.
+     * The list is cycled rather than stretched across a subset, so the sphere
+     * reads as a solid field of technologies instead of a wireframe with a few
+     * captions. Cycling by index is safe here: consecutive indices in a
+     * Fibonacci lattice are a golden angle apart, so a repeat of the same word
+     * lands on the far side of the sphere rather than next to itself.
      */
     const labelList: string[] = JSON.parse(labelsKey);
 
-    const labelNodes = labelList.slice(0, nodes.length).map((text, i, all) => ({
-      text,
-      node: Math.floor((i * nodes.length) / all.length),
-      // Every third one in the accent colour, so the ring reads as varied
-      // rather than as a uniform list.
-      accent: i % 3 === 0,
-    }));
+    const labelNodes =
+      labelList.length === 0
+        ? []
+        : nodes.map((_, i) => ({
+            text: labelList[i % labelList.length],
+            node: i,
+            // Roughly every fifth in the accent colour, offset from the list
+            // length so the colouring does not line up with the repeats.
+            accent: i % 5 === 0,
+          }));
 
     let width = 0;
     let height = 0;
@@ -276,6 +291,12 @@ export function NetworkMesh({
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
+        const fontScale = Math.min(
+          LABEL_SCALE_MAX,
+          Math.max(LABEL_SCALE_MIN, width / LABEL_REFERENCE_WIDTH),
+        );
+        const maxLabelWidth = width * LABEL_MAX_WIDTH_RATIO;
+
         for (const item of labelNodes) {
           const point = projected[item.node];
           const nearness = 1 - point.depth;
@@ -297,8 +318,8 @@ export function NetworkMesh({
           );
           if (xFade <= 0) continue;
 
-          ctx.globalAlpha = entry * xFade * 0.85;
-          ctx.font = `500 ${(10.5 + nearness * 4).toFixed(1)}px ${fontFamily}`;
+          ctx.globalAlpha = entry * xFade * 0.62;
+          ctx.font = `500 ${((7 + nearness * 3.2) * fontScale).toFixed(1)}px ${fontFamily}`;
           ctx.fillStyle = item.accent ? accent : heading;
 
           // Keep the label inside the canvas. The sphere very nearly fills the
@@ -306,13 +327,18 @@ export function NetworkMesh({
           // sliced off by the edge. Nudging is better than skipping: the label
           // stays attached to its node, and the shift is only ever as large as
           // the overhang.
-          const half = ctx.measureText(item.text).width / 2;
+          const textWidth = ctx.measureText(item.text).width;
+          // A name that spans a large share of the canvas stops reading as a
+          // point on the sphere and starts reading as a caption over it.
+          if (textWidth > maxLabelWidth) continue;
+
+          const half = textWidth / 2;
           const x = Math.min(
             Math.max(point.x, half + LABEL_EDGE_PAD),
             width - half - LABEL_EDGE_PAD,
           );
 
-          ctx.fillText(item.text, x, point.y - 10 - nearness * 4);
+          ctx.fillText(item.text, x, point.y - 7 - nearness * 3);
         }
       }
 

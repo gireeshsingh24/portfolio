@@ -4,7 +4,18 @@ import { NetworkMesh } from "@/components/visuals/NetworkMesh";
 import type { Profile } from "@/features/about/types";
 import { TypingRole } from "./TypingRole";
 
-export function HeroSection({ profile }: { profile: Profile }) {
+export function HeroSection({
+  profile,
+  /**
+   * Every technology named on the page, deduped — not just the ten in the
+   * marquee. The mesh puts a name on each of its nodes, so a short list would
+   * show the same handful of words over and over on one face of the sphere.
+   */
+  skills,
+}: {
+  profile: Profile;
+  skills: readonly string[];
+}) {
   return (
     // min-h rather than h: the section fills the viewport but can still grow
     // if the content needs more room (long role text, large font settings).
@@ -27,7 +38,7 @@ export function HeroSection({ profile }: { profile: Profile }) {
         aria-hidden
         className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[42%]"
       >
-        <NetworkMesh labels={profile.technologies} />
+        <NetworkMesh labels={skills} />
       </div>
 
       {/* Readability scrim between the mesh and the copy.

@@ -43,7 +43,15 @@ export default async function HomePage() {
       <SiteHeader name={profile.name} />
 
       <main id="main" className="flex-1">
-        <HeroSection profile={profile} />
+        <HeroSection
+          profile={profile}
+          skills={[
+            ...new Set([
+              ...profile.technologies,
+              ...stackGroups.flatMap((group) => group.items),
+            ]),
+          ]}
+        />
         <TechStrip items={profile.technologies} />
         <AboutSection profile={profile} />
         <ServicesSection services={services} />
