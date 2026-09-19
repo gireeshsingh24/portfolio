@@ -6,6 +6,18 @@
  * component file about rendering and lifecycle rather than trigonometry.
  */
 
+/**
+ * How many points sit on the sphere, and how close two of them must be to be
+ * joined by an edge.
+ *
+ * They are tuned together and live here, beside the functions they feed and
+ * the tests that guard them: raising the count without tightening the
+ * distance turns the mesh into a solid blob, because the average gap between
+ * neighbours shrinks as points are added.
+ */
+export const NODE_COUNT = 112;
+export const EDGE_DISTANCE = 0.5;
+
 export type Vec3 = { x: number; y: number; z: number };
 export type Edge = { a: number; b: number };
 

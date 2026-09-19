@@ -2,7 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
-import { buildEdges, buildNodes } from "@/lib/mesh";
+import {
+  buildEdges,
+  buildNodes,
+  EDGE_DISTANCE,
+  NODE_COUNT,
+} from "@/lib/mesh";
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,10 +33,6 @@ import { cn } from "@/lib/utils";
  *   - device pixels   → capped at 2, so a 3x phone does not draw 9x the pixels
  */
 
-/** Points on the sphere. Enough to read as a mesh, few enough to stay cheap. */
-const NODE_COUNT = 70;
-/** Edges only between genuinely close nodes, or the sphere becomes a solid blob. */
-const EDGE_DISTANCE = 0.62;
 /** Camera sits this far back in scene units; the sphere has radius 1. */
 const CAMERA_DISTANCE = 2.6;
 /** Larger values flatten the perspective, smaller ones exaggerate it. */
@@ -44,13 +45,23 @@ const POINTER_TILT = 0.4;
 const PULSE_COUNT = 7;
 /** Edge fractions per second — how fast one pulse crosses its edge. */
 const PULSE_SPEED = 0.55;
-/** Canvas width, in CSS pixels, below which labels are not drawn. */
-const LABEL_MIN_WIDTH = 560;
+/**
+ * Labels are drawn only when the canvas is a column beside the copy rather
+ * than a full-width layer underneath it; this is the width ratio that
+ * separates the two.
+ *
+ * A raw pixel width cannot tell them apart — the hero's side column on a
+ * 1024px laptop and a full-width phone canvas are both around 400px. What
+ * distinguishes them is how much of the viewport the canvas covers.
+ */
+const LABEL_SIDE_COLUMN_RATIO = 0.7;
 /**
  * Fraction of the canvas width where labels start fading in, measured from
  * its left edge. Everything left of this is where the hero copy sits.
  */
-const LABEL_CLEAR_START = 0.42;
+const LABEL_CLEAR_START = 0.06;
+/** Gap kept between a label and the canvas edge, in CSS pixels. */
+const LABEL_EDGE_PAD = 8;
 
 type Pulse = { edge: number; t: number; speed: number };
 
@@ -138,6 +149,7 @@ export function NetworkMesh({
 
     let width = 0;
     let height = 0;
+    let isSideColumn = false;
 
     const resize = () => {
       // Cap DPR: beyond 2 the extra pixels are invisible but the fill cost is
@@ -147,6 +159,7 @@ export function NetworkMesh({
 
       width = rect.width;
       height = rect.height;
+      isSideColumn = rect.width < window.innerWidth * LABEL_SIDE_COLUMN_RATIO;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       // Draw in CSS pixels and let the transform handle the device ratio.
@@ -192,7 +205,7 @@ export function NetworkMesh({
       // width. Without the clamp a tall narrow phone viewport drives the
       // radius off its height and the sphere grows wider than the screen,
       // leaving only a slab of criss-crossing lines with no silhouette.
-      const radius = Math.min(Math.max(width, height) * 0.4, width * 0.52);
+      const radius = Math.min(Math.max(width, height) * 0.36, width * 0.46);
 
       ctx.clearRect(0, 0, width, height);
 
@@ -253,13 +266,13 @@ export function NetworkMesh({
       // glyphs flat, so a "back" label is just a front label in the wrong
       // place.
       //
-      // Suppressed on a narrow canvas. There the copy spans the full width and
-      // sits directly over the sphere, so labels land behind the paragraph and
-      // compete with it — and unlike the wireframe they are bright enough that
-      // the scrim cannot settle the fight. Nothing is lost: the same
-      // technologies are real text in the strip below the hero and again in
-      // the stack section.
-      if (labelNodes.length > 0 && width >= LABEL_MIN_WIDTH) {
+      // Suppressed when the canvas spans the viewport. That is the small-screen
+      // layout, where the copy runs the full width and sits directly over the
+      // sphere, so labels land behind the paragraph and compete with it — and
+      // unlike the 1px wireframe they are bright enough that the scrim cannot
+      // settle the fight. Nothing is lost: the same technologies are real text
+      // in the strip below the hero and again in the stack section.
+      if (labelNodes.length > 0 && isSideColumn) {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
@@ -287,7 +300,19 @@ export function NetworkMesh({
           ctx.globalAlpha = entry * xFade * 0.85;
           ctx.font = `500 ${(10.5 + nearness * 4).toFixed(1)}px ${fontFamily}`;
           ctx.fillStyle = item.accent ? accent : heading;
-          ctx.fillText(item.text, point.x, point.y - 10 - nearness * 4);
+
+          // Keep the label inside the canvas. The sphere very nearly fills the
+          // width, so a node on the rim would otherwise have half its name
+          // sliced off by the edge. Nudging is better than skipping: the label
+          // stays attached to its node, and the shift is only ever as large as
+          // the overhang.
+          const half = ctx.measureText(item.text).width / 2;
+          const x = Math.min(
+            Math.max(point.x, half + LABEL_EDGE_PAD),
+            width - half - LABEL_EDGE_PAD,
+          );
+
+          ctx.fillText(item.text, x, point.y - 10 - nearness * 4);
         }
       }
 

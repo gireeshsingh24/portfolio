@@ -25,7 +25,7 @@ export function HeroSection({ profile }: { profile: Profile }) {
           depth can drive it. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[68%]"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[46%] lg:w-[44%]"
       >
         <NetworkMesh labels={profile.technologies} />
       </div>
