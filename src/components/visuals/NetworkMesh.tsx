@@ -44,12 +44,38 @@ const POINTER_TILT = 0.4;
 const PULSE_COUNT = 7;
 /** Edge fractions per second — how fast one pulse crosses its edge. */
 const PULSE_SPEED = 0.55;
+/** Canvas width, in CSS pixels, below which labels are not drawn. */
+const LABEL_MIN_WIDTH = 560;
 
 type Pulse = { edge: number; t: number; speed: number };
 
-export function NetworkMesh({ className }: { className?: string }) {
+export function NetworkMesh({
+  className,
+  labels,
+}: {
+  className?: string;
+  /**
+   * Names to ride on the mesh's nodes — the technologies on the profile.
+   *
+   * Decorative only. Canvas text is invisible to assistive technology and
+   * unsearchable, so these must already appear as real text elsewhere on the
+   * page (they do: the tech strip and the stack section). Nothing here is the
+   * only copy of anything.
+   */
+  labels?: readonly string[];
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReduced = usePrefersReducedMotion();
+
+  // Depend on the CONTENT of the labels, not the array's identity. A prop
+  // array is a fresh object on every render, so depending on the array itself
+  // would tear down and restart the animation — visibly resetting the
+  // rotation — every time anything above re-renders.
+  //
+  // The effect reads the labels back out of this string rather than closing
+  // over the prop, which keeps it honestly exhaustive in its dependencies:
+  // the serialised form is the only thing it depends on.
+  const labelsKey = JSON.stringify(labels ?? []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -78,6 +104,32 @@ export function NetworkMesh({ className }: { className?: string }) {
     const styles = getComputedStyle(document.documentElement);
     const accent = styles.getPropertyValue("--color-accent").trim() || "#f2795b";
     const line = styles.getPropertyValue("--color-muted").trim() || "#8a94a6";
+    const heading = styles.getPropertyValue("--color-body").trim() || "#c3ccdb";
+
+    // Canvas needs a real font stack, not the CSS variable the page uses.
+    // Read it off the body so the labels match the rest of the type instead of
+    // falling back to the browser's default sans.
+    const fontFamily =
+      getComputedStyle(document.body).fontFamily ||
+      "ui-sans-serif, system-ui, sans-serif";
+
+    /**
+     * Which nodes carry a label.
+     *
+     * Spread across the whole node list rather than taken from the front of
+     * it: the Fibonacci lattice walks the sphere pole to pole, so consecutive
+     * indices sit near each other and the first N labels would all crowd one
+     * cap. A stride spaces them around the surface.
+     */
+    const labelList: string[] = JSON.parse(labelsKey);
+
+    const labelNodes = labelList.slice(0, nodes.length).map((text, i, all) => ({
+      text,
+      node: Math.floor((i * nodes.length) / all.length),
+      // Every third one in the accent colour, so the ring reads as varied
+      // rather than as a uniform list.
+      accent: i % 3 === 0,
+    }));
 
     let width = 0;
     let height = 0;
@@ -186,6 +238,40 @@ export function NetworkMesh({ className }: { className?: string }) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 0.8 + nearness * 2, 0, Math.PI * 2);
         ctx.fill();
+      }
+
+      // Labels.
+      //
+      // Drawn only on the front hemisphere. A label on the far side sits
+      // behind the wireframe and reads as clutter rather than as text, and
+      // there is no way to flip it round to face the viewer — canvas draws
+      // glyphs flat, so a "back" label is just a front label in the wrong
+      // place.
+      //
+      // Suppressed on a narrow canvas. There the copy spans the full width and
+      // sits directly over the sphere, so labels land behind the paragraph and
+      // compete with it — and unlike the wireframe they are bright enough that
+      // the scrim cannot settle the fight. Nothing is lost: the same
+      // technologies are real text in the strip below the hero and again in
+      // the stack section.
+      if (labelNodes.length > 0 && width >= LABEL_MIN_WIDTH) {
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        for (const item of labelNodes) {
+          const point = projected[item.node];
+          const nearness = 1 - point.depth;
+          if (nearness < 0.46) continue;
+
+          // Remap the visible band to 0..1 so a label fades in as it comes
+          // round rather than popping on at the hemisphere boundary.
+          const entry = (nearness - 0.46) / 0.54;
+
+          ctx.globalAlpha = entry * 0.85;
+          ctx.font = `500 ${(10.5 + nearness * 4).toFixed(1)}px ${fontFamily}`;
+          ctx.fillStyle = item.accent ? accent : heading;
+          ctx.fillText(item.text, point.x, point.y - 10 - nearness * 4);
+        }
       }
 
       // Update pulses travelling between nodes.
@@ -300,7 +386,7 @@ export function NetworkMesh({ className }: { className?: string }) {
       document.removeEventListener("visibilitychange", sync);
       window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, [prefersReduced]);
+  }, [prefersReduced, labelsKey]);
 
   return (
     <canvas

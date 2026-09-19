@@ -2,8 +2,6 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { NetworkMesh } from "@/components/visuals/NetworkMesh";
 import type { Profile } from "@/features/about/types";
-import portfolioImg from "@/assets/images/portfolio-image.png";
-import { HeroPortrait } from "./HeroPortrait";
 import { TypingRole } from "./TypingRole";
 
 export function HeroSection({ profile }: { profile: Profile }) {
@@ -27,9 +25,9 @@ export function HeroSection({ profile }: { profile: Profile }) {
           depth can drive it. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[68%]"
       >
-        <NetworkMesh />
+        <NetworkMesh labels={profile.technologies} />
       </div>
 
       {/* Readability scrim between the mesh and the copy.
@@ -43,8 +41,11 @@ export function HeroSection({ profile }: { profile: Profile }) {
         className="pointer-events-none absolute inset-0 bg-bg/55 md:bg-transparent md:[background-image:linear-gradient(to_right,var(--color-bg)_0%,color-mix(in_srgb,var(--color-bg)_72%,transparent)_34%,transparent_62%)]"
       />
 
-      <Container className="relative grid w-full items-center gap-12 py-10 md:grid-cols-2 md:py-0">
-        <div>
+      <Container className="relative w-full py-10 md:py-0">
+        {/* Capped width now that the portrait no longer holds the right half.
+            Without it the headline would stretch the full container and the
+            mesh behind it would have nowhere to show through. */}
+        <div className="max-w-2xl">
           {/* §44: eyebrow positions seniority and years before the claim. */}
           <p
             data-reveal
@@ -125,8 +126,6 @@ export function HeroSection({ profile }: { profile: Profile }) {
             </a>
           </p>
         </div>
-
-        <HeroPortrait src={portfolioImg} alt={profile.avatar.alt} />
       </Container>
     </section>
   );
