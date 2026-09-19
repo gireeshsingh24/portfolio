@@ -24,6 +24,8 @@ export const profile: Profile = {
   // Served from public/. Regenerate and replace that file to update the
   // download — nothing else references the filename.
   resumeUrl: "/Gireesh-Singh-Portfolio.pdf",
+  // +91 95108 41794. Digits only: wa.me rejects "+", spaces and dashes.
+  whatsapp: "919510841794",
   avatar: {
     src: "/images/avatar.svg",
     alt: "Portrait of Gireesh Singh",
