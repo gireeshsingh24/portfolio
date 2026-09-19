@@ -21,7 +21,9 @@ export const profile: Profile = {
     "streams onto the same screen. Seven years across React, Next.js and " +
     "TypeScript on the frontend, and Node.js, NestJS and PostgreSQL on the " +
     "backend — shipped to web, mobile and desktop.",
-  resumeUrl: "/resume.pdf",
+  // Served from public/. Regenerate and replace that file to update the
+  // download — nothing else references the filename.
+  resumeUrl: "/Gireesh-Singh-Portfolio.pdf",
   avatar: {
     src: "/images/avatar.svg",
     alt: "Portrait of Gireesh Singh",
@@ -57,7 +59,12 @@ export const profile: Profile = {
       href: "mailto:gireesh.rajput786@gmail.com",
       icon: "mail",
     },
-    { id: "github", label: "GitHub", href: "https://github.com/", icon: "github" },
+    {
+      id: "github",
+      label: "GitHub",
+      href: "https://github.com/gireeshsingh24",
+      icon: "github",
+    },
     {
       id: "linkedin",
       label: "LinkedIn",

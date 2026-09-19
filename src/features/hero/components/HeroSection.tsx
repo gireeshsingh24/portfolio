@@ -1,5 +1,6 @@
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { NetworkMesh } from "@/components/visuals/NetworkMesh";
 import type { Profile } from "@/features/about/types";
 import portfolioImg from "@/assets/images/portfolio-image.png";
 import { HeroPortrait } from "./HeroPortrait";
@@ -14,7 +15,35 @@ export function HeroSection({ profile }: { profile: Profile }) {
       id="home"
       className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden"
     >
-      <Container className="grid w-full items-center gap-12 py-10 md:grid-cols-2 md:py-0">
+      {/* Rotating node mesh behind the copy.
+          No mask here, deliberately: the sphere is sized off the section's
+          larger axis, so any radial fade tight enough to matter lands on its
+          rim and erases the silhouette that makes it read as 3D. The mesh
+          already fades into the background on its own — depth drives alpha, so
+          the far side of the sphere recedes.
+          Nor is there a wrapper opacity: 1px antialiased lines lose far more
+          than the number suggests when a layer opacity is applied on top of
+          their own alpha, so the fade is done once, inside the canvas, where
+          depth can drive it. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+      >
+        <NetworkMesh />
+      </div>
+
+      {/* Readability scrim between the mesh and the copy.
+          Dimming the mesh itself far enough for comfortable reading would have
+          flattened it back into noise, so the contrast is bought locally: a
+          wash under the text column only, leaving the mesh crisp everywhere
+          else. On small screens the copy spans the full width, so the wash
+          covers everything rather than one side. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-bg/55 md:bg-transparent md:[background-image:linear-gradient(to_right,var(--color-bg)_0%,color-mix(in_srgb,var(--color-bg)_72%,transparent)_34%,transparent_62%)]"
+      />
+
+      <Container className="relative grid w-full items-center gap-12 py-10 md:grid-cols-2 md:py-0">
         <div>
           {/* §44: eyebrow positions seniority and years before the claim. */}
           <p
@@ -60,6 +89,41 @@ export function HeroSection({ profile }: { profile: Profile }) {
               Discuss Your Project
             </ButtonLink>
           </div>
+
+          {/*
+           * Third path, deliberately quieter than the two buttons: a client
+           * who is not ready to start a conversation still wants something to
+           * forward to whoever signs off. A plain <a>, not next/link, because
+           * the target is a static file rather than a route — and `download`
+           * saves it instead of replacing the page with a PDF viewer.
+           */}
+          <p
+            data-reveal
+            style={{ "--reveal-delay": "440ms" } as React.CSSProperties}
+            className="mt-6 text-sm"
+          >
+            <a
+              href={profile.resumeUrl}
+              download
+              className="inline-flex items-center gap-2 text-muted underline-offset-4 transition-colors hover:text-accent hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M12 3v12" />
+                <path d="m7 12 5 5 5-5" />
+                <path d="M5 21h14" />
+              </svg>
+              Download portfolio (PDF)
+            </a>
+          </p>
         </div>
 
         <HeroPortrait src={portfolioImg} alt={profile.avatar.alt} />

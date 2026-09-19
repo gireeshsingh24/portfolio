@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 /** §56 — a real 404 rather than the framework default. */
 export default function NotFound() {
   return (
-    <main className="flex min-h-svh flex-1 items-center">
+    <main id="main" className="flex min-h-svh flex-1 items-center">
       <Container className="text-center">
         <p className="font-mono text-sm text-accent">404</p>
 

@@ -88,13 +88,25 @@ export function ProjectCard({
           reversed && "md:order-1",
         )}
       >
-        <Image
-          src={project.image.src}
-          alt={project.image.alt}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-contain transition-transform duration-700 ease-out group-hover/tilt:scale-105"
-        />
+        {/* Parallax plane. Scaled up slightly so shifting it never exposes an
+            empty edge inside the card's clip. The transition is on the
+            wrapper, not the image, so the hover zoom below can still run on
+            its own timing. */}
+        <div
+          className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
+          style={{
+            transform:
+              "scale(1.06) translate3d(calc(var(--tilt-x, 0) * -16px), calc(var(--tilt-y, 0) * -16px), 0)",
+          }}
+        >
+          <Image
+            src={project.image.src}
+            alt={project.image.alt}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-contain transition-transform duration-700 ease-out group-hover/tilt:scale-105"
+          />
+        </div>
       </TiltCard>
     </article>
   );
