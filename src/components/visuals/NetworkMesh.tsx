@@ -46,6 +46,11 @@ const PULSE_COUNT = 7;
 const PULSE_SPEED = 0.55;
 /** Canvas width, in CSS pixels, below which labels are not drawn. */
 const LABEL_MIN_WIDTH = 560;
+/**
+ * Fraction of the canvas width where labels start fading in, measured from
+ * its left edge. Everything left of this is where the hero copy sits.
+ */
+const LABEL_CLEAR_START = 0.42;
 
 type Pulse = { edge: number; t: number; speed: number };
 
@@ -267,7 +272,19 @@ export function NetworkMesh({
           // round rather than popping on at the hemisphere boundary.
           const entry = (nearness - 0.46) / 0.54;
 
-          ctx.globalAlpha = entry * 0.85;
+          // Horizontal fade. The canvas deliberately runs under the copy —
+          // that overlap is what lets the wireframe read as a backdrop rather
+          // than a panel bolted to one side — but a LABEL landing there sits
+          // on the paragraph and competes with it. So labels fade out towards
+          // the left of the canvas and only ever come up in the clear space
+          // to the right of the text.
+          const xFade = Math.min(
+            1,
+            Math.max(0, (point.x - width * LABEL_CLEAR_START) / (width * 0.18)),
+          );
+          if (xFade <= 0) continue;
+
+          ctx.globalAlpha = entry * xFade * 0.85;
           ctx.font = `500 ${(10.5 + nearness * 4).toFixed(1)}px ${fontFamily}`;
           ctx.fillStyle = item.accent ? accent : heading;
           ctx.fillText(item.text, point.x, point.y - 10 - nearness * 4);
