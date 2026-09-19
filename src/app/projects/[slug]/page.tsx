@@ -58,7 +58,7 @@ export default async function ProjectPage(
       <ScrollRevealProvider />
       <SiteHeader name={profile.name} />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Container className="py-16 md:py-24">
           <Link
             href="/#projects"

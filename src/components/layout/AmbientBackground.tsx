@@ -4,7 +4,7 @@ export function AmbientBackground() {
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      <div className="absolute inset-0 opacity-[0.18]">
+      <div className="absolute inset-0 opacity-[0.11]">
         <div
           className="animate-grid-pan absolute inset-x-0 -top-16 h-[calc(100%+8rem)]"
           style={{

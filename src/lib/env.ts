@@ -14,8 +14,36 @@ const envSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.url().default("http://localhost:3000"),
 });
 
+/**
+ * Resolves the canonical origin.
+ *
+ * The default below is a DEVELOPMENT fallback, and it used to be what
+ * production actually shipped: with NEXT_PUBLIC_SITE_URL unset on the host,
+ * the live sitemap and robots.txt advertised http://localhost:3000, which is
+ * worse than having no sitemap at all — and a canonical tag pointing at
+ * localhost would tell search engines to drop the real pages.
+ *
+ * Nothing about that failure is visible: the build succeeds, the pages render,
+ * and only the URLs inside them are wrong. So the host's own value is used as
+ * a second source before falling back to localhost.
+ *
+ * `VERCEL_PROJECT_PRODUCTION_URL` is the project's production domain and is
+ * present at build time, which is when these static pages are generated. It
+ * carries no protocol, so one is added. It is deliberately preferred over
+ * `VERCEL_URL`, which is unique per deployment — using that would make every
+ * preview claim a different canonical URL.
+ */
+function resolveSiteUrl(): string | undefined {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+
+  const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercelDomain) return `https://${vercelDomain}`;
+
+  return undefined;
+}
+
 const parsed = envSchema.safeParse({
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_SITE_URL: resolveSiteUrl(),
 });
 
 if (!parsed.success) {

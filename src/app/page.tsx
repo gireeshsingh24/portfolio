@@ -42,7 +42,7 @@ export default async function HomePage() {
       <ScrollRevealProvider />
       <SiteHeader name={profile.name} />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <HeroSection profile={profile} />
         <TechStrip items={profile.technologies} />
         <AboutSection profile={profile} />
